@@ -41,7 +41,7 @@ Make sure you have DIAMOND and Prodigal installed and available in your $PATH.
 
 4. Downloading the Reference Database
 ```bash
-python PlasGeneAnnotatoR_db.py
+python src/PlasGeneAnnotatoR_db.py
 ```
 ---
 
