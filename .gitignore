@@ -1,0 +1,16 @@
+# Entorno virtual
+env/
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Base de datos (descargable)
+db/
+
+# Resultados generados por el usuario
+results/
+
+# Archivos del sistema (Windows/macOS)
+.DS_Store
+Thumbs.db
