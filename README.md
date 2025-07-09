@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="PlasGeneAnnotatoR_banner.png" alt="PlasGeneAnnotatoR banner" width="100%">
+</p>
+
 # PlasGeneAnnotatoR
 
 **PlasGeneAnnotatoR** is a bioinformatics tool for the functional annotation of genes in plasmid contigs.  
