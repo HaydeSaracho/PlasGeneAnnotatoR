@@ -104,3 +104,67 @@ Output file names use the input file basename as `sample_name`.
 # Run PlasGeneAnnotatoR using the following code to annotate and classify into functional modules (replication, motility, stability and adaptation) the plasmid proteins.
 python src/PlasGeneAnnotatoR.py -i example/pBR322.fasta -o results/ 
 ```
+
+## Visualize Functional Modules in Predicted Plasmid Genes
+
+PlasGeneAnnotatoR outputs tab-separated annotation files containing predicted plasmid genes and associated metadata. If your annotation file includes functional module information (e.g. `module=` in the `subject_id` column), you can generate a plot summarizing the number of genes per module.
+
+### Requirements
+
+This script uses the `tidyverse` and `stringr` packages in R.
+
+### Usage
+
+Save the following script as `generate_plot.R` in your working directory:
+
+```r
+library(tidyverse)
+
+plot_plasgenes <- function(file_path) {
+  annotations <- read_tsv(
+    file_path,
+    col_names = FALSE,
+    locale = locale(encoding = "UTF-8"),
+    show_col_types = FALSE
+  )
+
+  colnames(annotations) <- c(
+    "query_id", "subject_id", "pident", "length", "mismatch", "gapopen",
+    "qstart", "qend", "sstart", "send", "evalue", "bitscore"
+  )
+
+  annotations <- annotations %>%
+    mutate(module = str_extract(subject_id, "module=([^|]+)")) %>%
+    mutate(module = str_remove(module, "module=")) %>%
+    drop_na(module)
+
+  count_modules <- annotations %>%
+    count(module, name = "n") %>%
+    arrange(desc(n))
+
+  plot <- ggplot(count_modules, aes(x = reorder(module, n), y = n, fill = module)) +
+    geom_col(width = 0.6) +
+    coord_flip() +
+    scale_fill_brewer(palette = "Set2") +
+    labs(
+      title = "Distribution of Functional Modules in Predicted Plasmid Genes",
+      x = "Functional Module",
+      y = "Number of Genes"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(legend.position = "none")
+
+  ggsave("plasmodular_distribution.png", plot, width = 9, height = 6, dpi = 300)
+
+  print(plot)
+}
+```
+
+Then, from R, run the following code:
+
+```r
+source("generate_plot.R")
+plot_plasgenes("*.annotations.tsv")
+```
+
+This will produce a plot like this and save it as `plasmodular_distribution.png`
